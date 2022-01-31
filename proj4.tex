@@ -1,0 +1,182 @@
+\documentclass[a4paper, 11pt, final]{article}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,czech]{babel}
+\usepackage[left=2cm, text={17cm, 24cm}, top=3cm]{geometry}
+
+\usepackage[unicode, hidelinks]{hyperref}
+
+\providecommand{\uv}[1]{\quotedblbase #1 \textquotedblleft}
+% Source: BibTeX's original documentation by Oren Patashnik
+% (http://ftp.cvut.cz/tex-archive/biblio/bibtex/base/btxdoc.tex)
+\def\BibTeX{\textrm{B\kern-.05em\textsc{i\kern-.025em b}\kern-.08em T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+    \Huge \textsc{Vysoké učení technické v~Brně}\\
+    \huge \textsc{Fakulta informačních technologií}
+    
+    \vspace{\stretch{0.382}}
+    
+    \LARGE Typografie a publikování\,--\,4. projekt\\
+    % BibTeX style source (edited): BibTeX's original documentation by Oren Patashnik
+    % (http://ftp.cvut.cz/tex-archive/biblio/bibtex/base/btxdoc.tex)
+    \Huge Používání nástroje B\kern-.05em{\huge I}\kern-.025em{\huge B}\kern-.08em\TeX{} pro citace v \LaTeX{}u
+    
+    \vspace{\stretch{0.618}}
+\end{center}
+
+\Large \noindent \today \hfill Michal Šmahel
+\end{titlepage}
+
+\section{Citace v \LaTeX{}u}
+\label{sec:latex-citations}
+
+Při psaní jakéhokoliv obsahu nás dříve či později zastihne potřeba citovat použitou literaturu, aby nebyla porušena
+citační etika. Pokud se autor rozhodne svou práci vysázet v systému \LaTeX{}, má pro tyto účely k dispozici prostředí
+\texttt{thebibliography} a příkaz \verb|\cite|.
+
+V prostředí \texttt{thebibliography} se pomocí specifikují využité literární prameny a návěští, pomocí nichž se
+následně bude možné na tyto záznamy odkazovat ve vlastním textu. Toto prostředí je koncipováno obdobně jako
+\texttt{itemize} (prostředí pro neuspořádaný seznam) s tím rozdílem, že se jednotlivé položky uvozují příkazem
+\verb|\bibitem{návěští}| (nikoliv \verb|\item| jako v případě \texttt{itemize}).
+
+K odkazování poté slouží příkaz \verb|\cite{návěští}|, kde se jako povinný parametr uvede návěští uvedené v příkazu
+\verb|\bibitem|. Praktické použití poté vypadá např. takto:
+
+\begin{verbatim}
+    % Vlastní text
+    \dots jak uvádí Hooke v~\cite{hook} i~jeho německý kolega prof.~Kreuz
+    (viz~\cite{kreuz, neumann}), je celá situace dosud nejasná.
+    
+    % Literatura
+    \begin{thebibliography}{9}
+    \bibitem{kreuz} Kreuz, K. H.
+        Mechanické vlastnosti plastů. M\"{u}nchen: Spring Verlag, 1978.
+    \bibitem{hook} Hooke, C. J.
+        The Linear Pressure. N. Y.: Addison-Wesley Publishing Company,
+        1987.
+    \bibitem{neumann} Neumann, J.
+        Tlaková reverze $\pi$ v kovových materiálech. Hutnické listy,
+        55, 1990, s. 12-51.
+    \end{thebibliography}
+\end{verbatim}
+
+Tato kapitola a uvedený příklad vychází z knihy \LaTeX{} pro začátečníky \cite{rybicka-latex}.
+
+\section{BibTeX}
+
+Z příkladu v kapitole \ref{sec:latex-citations} je patrné, že je ruční způsob vkládání citací v \LaTeX{}u
+značně pracný a je velmi jednoduché udělat chybu a literaturu odcitovat chybně. Pro zpříjemnění práce je
+možné použít například \BibTeX{}, který lze definovat např. takto: \uv{BibTEX je nástroj, který usnadňuje
+sestavení soupisu bibliografických citací při sazbě dokumentů za pomoci systému LATEX.} \cite{pysny-plaincz}
+
+\BibTeX{} zastoupí především tu část práce s citacemi, kdy je třeba správně vysázet jednotlivé citace
+do~prostředí \texttt{thebibliography}. Místo přemýšlení nad tím, jak se mají poskládat jednotlivé údaje
+o citovaném díle, stačí pouze tyto údaje systematicky vložit do konfiguračního souboru s příponou
+\texttt{.bib} a další práci nechat na \BibTeX{}u. Místo prostředí \texttt{thebibliography} se využijí
+příkazy \verb|\bibliographystyle| (nastavuje soubor \texttt{.bst}\,--\,viz podkapitolu
+\ref{subsec:sty-files}) a \verb|\bibliography| (vygeneruje prostředí \texttt{thebibliography} podle
+souboru \texttt{.bib}\,--\,viz podkapitolu \ref{subsec:bib-files}). \cite{pysny-plaincz, patashnik-bibtexing}
+
+Příklad z kapitoly \ref{sec:latex-citations} poté bude vypadat např. takto (v souboru \texttt{.tex}):
+
+\begin{verbatim}
+    % Vlastní text
+    \dots jak uvádí Hooke v~\cite{hook} i~jeho německý kolega prof.~Kreuz
+    (viz~\cite{kreuz, neumann}), je celá situace dosud nejasná.
+    
+    % Literatura (přípony souborů je možné vynechat)
+    \bibliographystyle{czplain.bst}
+    \bibliography{sources-db.bib}
+\end{verbatim}
+
+Více pozitiv, ale také negativa nástroje \BibTeX{} je možné nalézt v článku od J\"{u}rgena Fenna, který
+se touto problematikou zabývá podrobněji (zejména v kapitole 1) \cite{fenn-managing-citations}.
+
+\subsection{Nastavení stylu zobrazených citací}
+\label{subsec:sty-files}
+
+Pro určení, jakým způsobem se budou sázet citace, které \BibTeX{} generuje, se používají soubory \texttt{.bst}.
+Měnit způsob vysázení citací je třeba zejména proto, že se v praxi používají různé konvence. \BibTeX{} obsahuje
+několik standardních stylů citací\,--\,\texttt{plain}, \texttt{unsrt}, \texttt{alpha} a \texttt{abbrv}. Tyto
+styly není třeba stahovat a přikládat ke zdrojovým kódům \LaTeX{}u pro kompilaci. \cite{patashnik-bibtexing}
+
+Kromě těchto předdefinovaných stylů je možné vytvořit si svůj vlastní\,--\,odvozený od výchozích stylů
+uvedených výše. Tento proces je více rozepsán v dokumentaci \BibTeX{}u \cite{patashnik-bibtexing}. Postup
+také podrobněji popisuje Ing.\,Pyšný ve své bakalářské práci, která se věnuje tvorbě stylu \texttt{czplain} 
+\cite{pysny-plaincz}.
+
+V českém prostředí je možné kromě stylu \texttt{czplain} \cite{pysny-plaincz} využít také styl \texttt{czechiso},
+který vytvořil a zdokumentoval Ing.\,Martinek \cite{martinek-czechiso}. Další alternativou je styl
+\texttt{csplainnat}\footnote{K tomuto stylu se neváže žádná textová práce, zdrojové kódy včetně příkladů
+jsou dostupné na Githubu: \url{https://github.com/mudrd8mz/csplainnat}.}. Nejnovějším stylem vyvíjeným
+pro aktuální normu ISO 690 platnou v České republice je \texttt{biblatex-iso690} \cite{hoftich-biblatex-iso690}.
+Tento styl je však již pro \texttt{biblatex}, což je \LaTeX{}ový balíček, který je možné pokládat za nástupce
+\BibTeX{}u. \cite{cstug-zpravodaj-2016-1}
+
+\subsection{Soubor *.bib}
+\label{subsec:bib-files}
+
+Citovaná literatura je obsažena v souboru s příponou \texttt{.bib}. Ten pro každý zdroj obsahuje položky,
+které musí být uvedeny v citaci, a z nichž následně \BibTeX{} vygeneruje položky \verb|\bibitem|. Položky
+se různí podle toho, o jaký druh literatury jde. \BibTeX{} zvládá většinu běžných typů dokumentů, mezi něž
+patří kvalifikační práce, odborné články, knihy, příspěvky z konferencí a další.
+\cite{pysny-plaincz, patashnik-bibtexing}
+
+Konkrétní příklady \texttt{.bib} souborů je možné nalézt například v bakalářské práci Ing.\,Pyšného\ 
+\cite{pysny-plaincz}. Obecně položky popisuje dokumentace \BibTeX{}u \cite{patashnik-bibtexing}.
+
+\subsection{Databáze citací}
+
+Autoři, kteří píší větší množství publikací, na nichž případně spolupracují s dalšími lidmi, si nemusí
+vystačit ani s \BibTeX{}em (případně balíčkem \texttt{biblatex}). V obou případech jsou totiž údaje
+k citovaným zdrojům ukládány v souboru, který je lokálně umístěn na počítači autorů, v lepším případě
+ve sdíleném repozitáři. Ani repozitář však neřeší problém s přenositelností často citované literatury
+napříč několika dokumenty. \cite{sonke-opening-science, thummala-www-bib-tools}
+
+Z tohoto důvodu se používají různé on-line služby, kde je možné vytvořit si vlastní databázi citované
+literatury a případně ji i sdílet svým kolegům. To může velmi zefektivnit práci a usnadnit hledání
+citací z často využívaných zdrojů. \cite{sonke-opening-science, amjad-jab-ref-ext, thummala-www-bib-tools}
+
+\section{Alternativní řešení}
+
+Byly zmíněny 2 alternativní cesty, kterými je možné se vydat, a to ruční řešení v \LaTeX{}u pomocí
+vyplňování prostředí \texttt{thebibliography} položkami \verb|\bibitem| a použití možného nástupce
+\BibTeX{}u\,--\,balíčku \texttt{biblatex}. Ruční řešení je vhodné využít pouze v případě menšího
+počtu citovaných zdrojů. Jeho využití uplatní nejspíše začínající autoři, kteří nepotřebují tolik
+zdrojů a zpočátku se nechtějí učit pracovat se složitějším systémem, jakým je např. \BibTeX{}.
+Balíček \texttt{biblatex} vypadá jako zajímavá náhrada \BibTeX{}u. Problém může být s tím,
+že definuje poněkud odlišné příkazy, takže není tak snadné na něho přejít z \BibTeX{}u.
+Pro ty, kteří s \BibTeX{}em neumí by to však mohla být dobrá volba. Je však třeba zvážit
+i další alternativy.
+
+Mezi další alternativy patří např. jazyk CSL, balíček \texttt{opmac}. Více se o nich můžete
+dozvědět ve Zpravodaji Československého sdružení uživatelů \TeX{}u \cite{cstug-zpravodaj-2016-1}.
+
+Pro psaní dokumentů podle české normy nejlépe vychází využití \texttt{biblatex-iso690}, který
+splňuje aktuální znění normy a je stále ve vývoji. \cite{cstug-zpravodaj-2016-1}
+
+\section{Získávání údajů do citací}
+
+I v dnešní době je občas stále problematické získat všechny potřebné údaje, které by měla citace
+obsahovat. Ačkoliv existují snahy o vytvoření databází obsahujících seznam literatury
+a k ní připravených citací v různých formátech, stále není možné jednoduše využít nějaký nástroj,
+který by nalezl všechny nebo alespoň většinu písemných zdrojů. \cite{zakova-tracking-resources}
+
+V současné době je mnoho informací obsaženo v databázích Google Scholar, Web of Science a Scopus.
+Některé dokumenty jsou na více místech současně, avšak nezanedbatelný počet je pouze v jednom
+z nich. Pro snazší vyhledávání vytvořila doc.\,Žáková aplikaci, kterou popisuje ve svém článku
+pro konferenci 2016 Cybernetics \& Informatics. Tato aplikace by měla rovněž pomoct s hodnocením
+autorů podle množství citací, které se váží k jejich publikacím. \cite{zakova-tracking-resources}
+
+\newpage
+\DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>} \urlstyle{tt}}
+\bibliographystyle{my_czechiso.bst}
+\bibliography{sources-db.bib}
+
+\end{document}
